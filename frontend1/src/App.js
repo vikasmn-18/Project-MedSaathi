@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 const API = 'http://127.0.0.1:5000';
@@ -21,6 +21,103 @@ const t = {
   Bengali: { selectLang:"ভাষা নির্বাচন", upload:"রিপোর্ট আপলোড করুন", paste:"অথবা টেক্সট পেস্ট করুন", explainBtn:"আমার রিপোর্ট ব্যাখ্যা করুন", listenBtn:"শুনুন", stopBtn:"থামুন", downloadBtn:" ডাউনলোড", shareFamily:"ফ্যামিলি শেয়ার", shareDoctor:"ডাক্তার শেয়ার", whatsappTitle:"WhatsApp শেয়ার", summaryTitle:"আপনার রিপোর্ট", askPlaceholder:"জিজ্ঞাসা করুন", disclaimer:"MedSaathi শুধুমাত্র তথ্যের জন্য। দয়া করে ডাক্তারের সাথে পরামর্শ করুন।", uploadSuccess:"ফাইল পড়া হয়েছে!", downloadSuccess:"ডাউনলোড সফল!", sampleBtn:"নমুনা রিপোর্ট" }
 };
 
+// Icons as SVG components
+const SunIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+  </svg>
+);
+
+const MoonIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+  </svg>
+);
+
+const UploadIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/>
+  </svg>
+);
+
+const FileTextIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
+  </svg>
+);
+
+const MicIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/>
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+);
+
+const ShareIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>
+  </svg>
+);
+
+const SendIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="22" x2="11" y1="2" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/>
+  </svg>
+);
+
+const AlertIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/>
+  </svg>
+);
+
+const HeartPulseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/>
+  </svg>
+);
+
+const CheckCircleIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/>
+  </svg>
+);
+
+const XCircleIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/>
+  </svg>
+);
+
+const GlobeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </svg>
+);
+
+const MessageCircleIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>
+  </svg>
+);
+
+const UsersIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+
+const StethoscopeIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/>
+  </svg>
+);
+
 export default function App() {
   const [familySummary, setFamilySummary] = useState('');
   const [doctorSummary, setDoctorSummary] = useState('');
@@ -38,8 +135,25 @@ export default function App() {
   const [toast, setToast] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [activeTab, setActiveTab] = useState('family');
+  const [darkMode, setDarkMode] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
+  const chatEndRef = useRef(null);
 
   const currentLang = t[language] || t.English;
+
+  // Auto-scroll chat
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatHistory]);
+
+  // Check system preference for dark mode
+  useEffect(() => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setDarkMode(prefersDark);
+  }, []);
 
   const showToast = (msg, isError = false) => {
     if (isError) setErrorMsg(msg);
@@ -74,7 +188,7 @@ export default function App() {
   };
 
   const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0] || e.dataTransfer?.files?.[0];
     if (!file) return;
     setUploading(true);
     const formData = new FormData();
@@ -93,6 +207,22 @@ export default function App() {
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFileUpload(e);
+  };
+
   const askQuestion = async () => {
     if (!question.trim()) return showToast('Type a question first', true);
     if (!reportText.trim()) return showToast('Analyze report first', true);
@@ -107,48 +237,39 @@ export default function App() {
     }
   };
 
-  // Download as Text
   const downloadReport = async () => {
     if (!summary) return alert('Analyze report first');
-
     try {
       const res = await axios.post(
         `${API}/download-pdf`,
         { summary, language },
-        {
-          responseType: 'blob',
-          timeout: 10000
-        }
+        { responseType: 'blob', timeout: 10000 }
       );
-
       const blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
-
       const link = document.createElement('a');
       link.href = url;
       link.download = `MedSaathi_Report_${language}.txt`;
-
       document.body.appendChild(link);
       link.click();
       link.remove();
-
       window.URL.revokeObjectURL(url);
-
-      alert(`✅ Downloaded successfully as ${language} text file!`);
+      showToast(currentLang.downloadSuccess);
     } catch (e) {
       console.error(e);
-      alert('Download failed. Please check if backend is running.');
+      showToast('Download failed. Please check if backend is running.', true);
     }
   };
+
   const shareFamilyOnWhatsApp = () => {
     if (!familySummary) return showToast('Please analyze the report first', true);
-    const message = `🏥 MedSaathi - Family Mode\n\nLanguage: ${language}\n\n${familySummary.substring(0, 700)}...\n\nGenerated by MedSaathi`;
+    const message = `MedSaathi - Family Mode\n\nLanguage: ${language}\n\n${familySummary.substring(0, 700)}...\n\nGenerated by MedSaathi`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const shareDoctorOnWhatsApp = () => {
     if (!doctorSummary) return showToast('Please analyze the report first', true);
-    const message = `🏥 MedSaathi - Doctor Mode\n\n${doctorSummary.substring(0, 700)}...\n\nGenerated by MedSaathi`;
+    const message = `MedSaathi - Doctor Mode\n\n${doctorSummary.substring(0, 700)}...\n\nGenerated by MedSaathi`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`, '_blank');
   };
 
@@ -160,7 +281,6 @@ export default function App() {
     }
     if (!summary) return showToast('Analyze report first', true);
     if (!('speechSynthesis' in window)) return showToast('Your browser does not support voice. Use Chrome.', true);
-
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(summary);
     const langMap = { Hindi:'hi-IN', Tamil:'ta-IN', Telugu:'te-IN', Kannada:'kn-IN', Bengali:'bn-IN', English:'en-IN' };
@@ -176,212 +296,732 @@ export default function App() {
 
   const displaySummary = activeTab === 'family' ? familySummary : doctorSummary;
 
-  return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 20, fontFamily: 'Arial, sans-serif' }}>
+  // Theme colors
+  const theme = {
+    bg: darkMode ? '#0f172a' : '#f8fafc',
+    cardBg: darkMode ? '#1e293b' : '#ffffff',
+    cardBorder: darkMode ? '#334155' : '#e2e8f0',
+    text: darkMode ? '#f1f5f9' : '#1e293b',
+    textSecondary: darkMode ? '#94a3b8' : '#64748b',
+    primary: '#10b981',
+    primaryHover: '#059669',
+    primaryLight: darkMode ? 'rgba(16, 185, 129, 0.15)' : '#ecfdf5',
+    secondary: '#3b82f6',
+    secondaryHover: '#2563eb',
+    secondaryLight: darkMode ? 'rgba(59, 130, 246, 0.15)' : '#eff6ff',
+    danger: '#ef4444',
+    dangerLight: darkMode ? 'rgba(239, 68, 68, 0.15)' : '#fef2f2',
+    warning: '#f59e0b',
+    warningLight: darkMode ? 'rgba(245, 158, 11, 0.15)' : '#fffbeb',
+    inputBg: darkMode ? '#0f172a' : '#f8fafc',
+    inputBorder: darkMode ? '#475569' : '#cbd5e1',
+  };
 
-      {/* Toast */}
+  return (
+    <div style={{ 
+      minHeight: '100vh', 
+      backgroundColor: theme.bg, 
+      color: theme.text,
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      transition: 'all 0.3s ease'
+    }}>
+      {/* Toast Notifications */}
       {toast && (
-        <div style={{ position:'fixed', top:20, left:'50%', transform:'translateX(-50%)', background:'#1D9E75', color:'white', padding:'12px 24px', borderRadius:8, zIndex:9999, fontSize:14 }}>
-          {toast}
+        <div style={{
+          position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)',
+          background: theme.primary, color: 'white', padding: '14px 28px', borderRadius: 12,
+          zIndex: 9999, fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 10,
+          boxShadow: '0 10px 40px rgba(16, 185, 129, 0.3)'
+        }}>
+          <CheckCircleIcon /> {toast}
         </div>
       )}
 
-      {/* Error */}
       {errorMsg && (
-        <div style={{ position:'fixed', top:20, left:'50%', transform:'translateX(-50%)', background:'#dc2626', color:'white', padding:'12px 24px', borderRadius:8, zIndex:9999, fontSize:14, display:'flex', gap:12, alignItems:'center' }}>
-          <span>{errorMsg}</span>
-          <span onClick={() => setErrorMsg('')} style={{ cursor:'pointer', fontWeight:500 }}>x</span>
+        <div style={{
+          position: 'fixed', top: 20, left: '50%', transform: 'translateX(-50%)',
+          background: theme.danger, color: 'white', padding: '14px 28px', borderRadius: 12,
+          zIndex: 9999, fontSize: 14, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 10,
+          boxShadow: '0 10px 40px rgba(239, 68, 68, 0.3)', cursor: 'pointer'
+        }} onClick={() => setErrorMsg('')}>
+          <XCircleIcon /> {errorMsg}
         </div>
       )}
 
       {/* Header */}
-      <div style={{ textAlign:'center', marginBottom:28 }}>
-        <h1 style={{ color:'#1D9E75', fontSize:32, marginBottom:4 }}>MedSaathi</h1>
-        <p style={{ color:'#666', fontSize:14 }}>Your Medical Report in Simple Language</p>
-      </div>
-
-      {/* Language */}
-      <div style={{ background:'#f8f9fa', borderRadius:12, padding:16, marginBottom:16, border:'1px solid #e9ecef' }}>
-        <label style={{ display:'block', marginBottom:8, fontWeight:500, fontSize:14 }}>{currentLang.selectLang}</label>
-        <select value={language} onChange={e => setLanguage(e.target.value)}
-          style={{ padding:'8px 12px', borderRadius:8, border:'1px solid #ccc', width:'100%', fontSize:14 }}>
-          <option value="English">English</option>
-          <option value="Hindi">हिंदी</option>
-          <option value="Tamil">தமிழ்</option>
-          <option value="Telugu">తెలుగు</option>
-          <option value="Kannada">ಕನ್ನಡ</option>
-          <option value="Bengali">বাংলা</option>
-        </select>
-      </div>
-
-      {/* Upload */}
-      <div style={{ background:'#f8f9fa', borderRadius:12, padding:16, marginBottom:16, border:'1px solid #e9ecef' }}>
-        <p style={{ fontWeight:500, marginBottom:10, fontSize:14 }}>{currentLang.upload}</p>
-        <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileUpload} style={{ fontSize:13 }} />
-        {uploading && <p style={{ color:'#1D9E75', marginTop:8, fontSize:13 }}>Reading your report...</p>}
-      </div>
-
-      {/* Paste + Sample */}
-      <div style={{ background:'#f8f9fa', borderRadius:12, padding:16, marginBottom:16, border:'1px solid #e9ecef' }}>
-        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
-          <p style={{ fontWeight:500, fontSize:14, margin:0 }}>{currentLang.paste}</p>
-          <button onClick={() => { setReportText(SAMPLE_REPORT); setErrorMsg(''); }}
-            style={{ background:'#f0fdf4', color:'#166534', padding:'5px 12px', borderRadius:6,
-              border:'0.5px solid #bbf7d0', cursor:'pointer', fontSize:12 }}>
-            {currentLang.sampleBtn}
-          </button>
-        </div>
-        <textarea rows={6} value={reportText} onChange={e => setReportText(e.target.value)}
-          placeholder="Paste your medical report text here..."
-          style={{ width:'100%', padding:12, borderRadius:8, border:'1px solid #ccc', fontSize:13, resize:'vertical', boxSizing:'border-box' }} />
-        <button onClick={analyzeReport} disabled={loading}
-          style={{ background: loading ? '#9ca3af' : '#1D9E75', color:'#fff', padding:'12px 28px',
-            borderRadius:8, border:'none', width:'100%', marginTop:12, fontSize:15, cursor: loading ? 'not-allowed' : 'pointer' }}>
-          {loading ? 'Analyzing...' : currentLang.explainBtn}
-        </button>
-      </div>
-
-      {/* Action Buttons */}
-      {summary && (
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:16 }}>
-          <button onClick={toggleVoice}
-            style={{ background: speaking ? '#dc2626' : '#7F77DD', color:'#fff',
-              padding:'12px', borderRadius:10, border:'none', cursor:'pointer', fontSize:14 }}>
-            {speaking ? currentLang.stopBtn : `${currentLang.listenBtn} ${language}`}
-          </button>
-          <button onClick={downloadReport}
-            style={{ background:'#185FA5', color:'#fff', padding:'12px',
-              borderRadius:10, border:'none', cursor:'pointer', fontSize:14 }}>
-            {currentLang.downloadBtn}
-          </button>
-        </div>
-      )}
-
-      {/* Summary Tabs */}
-      {(familySummary || doctorSummary) && (
-        <div style={{ marginBottom:16 }}>
-          <div style={{ display:'flex', gap:0, marginBottom:0 }}>
-            <button onClick={() => { setActiveTab('family'); setSummary(familySummary); }}
-              style={{ flex:1, padding:'10px', borderRadius:'10px 0 0 0', border:'1px solid #e9ecef',
-                background: activeTab==='family' ? '#1D9E75' : '#f8f9fa',
-                color: activeTab==='family' ? '#fff' : '#555', cursor:'pointer', fontSize:13, fontWeight:500 }}>
-              Family Mode
-            </button>
-            <button onClick={() => { setActiveTab('doctor'); setSummary(doctorSummary); }}
-              style={{ flex:1, padding:'10px', borderRadius:'0 10px 0 0', border:'1px solid #e9ecef',
-                background: activeTab==='doctor' ? '#185FA5' : '#f8f9fa',
-                color: activeTab==='doctor' ? '#fff' : '#555', cursor:'pointer', fontSize:13, fontWeight:500 }}>
-              Doctor Mode
-            </button>
-          </div>
-          <div style={{ background: activeTab==='family' ? '#f0fdf4' : '#eff6ff',
-            border: `1px solid ${activeTab==='family' ? '#bbf7d0' : '#bfdbfe'}`,
-            borderRadius:'0 0 12px 12px', padding:20 }}>
-            <div style={{ fontWeight:500, color: activeTab==='family' ? '#166534' : '#1e3a5f', marginBottom:12, fontSize:15 }}>
-              {activeTab==='family' ? currentLang.summaryTitle : 'Doctor Summary (English)'}
-            </div>
-            {displaySummary.split('\n').filter(l => l.trim()).map((line, i) => {
-              const isNormal = line.toLowerCase().includes('normal') || line.includes('Normal');
-              const isHigh = line.includes('[High]') || line.toLowerCase().includes('high');
-              const isLow = line.includes('[Low]') || line.toLowerCase().includes('low');
-              return (
-                <div key={i} style={{
-                  padding:'6px 10px', marginBottom:4, borderRadius:6, fontSize:13, lineHeight:1.8,
-                  background: isHigh ? '#fff8e1' : isLow ? '#fff0f0' : 'transparent',
-                  borderLeft: isHigh ? '3px solid #f59e0b' : isLow ? '3px solid #ef4444' : isNormal ? '3px solid #22c55e' : 'none',
-                  paddingLeft: (isHigh || isLow || isNormal) ? '10px' : '6px'
-                }}>
-                  {line}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Risk */}
-      {risk && (
+      <header style={{
+        background: theme.cardBg,
+        borderBottom: `1px solid ${theme.cardBorder}`,
+        padding: '16px 24px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        backdropFilter: 'blur(10px)'
+      }}>
         <div style={{
-          background: risk.color==='red' ? '#fff0f0' : risk.color==='orange' ? '#fff8e1' : '#f0fdf4',
-          border: `1px solid ${risk.color==='red' ? '#ffcdd2' : risk.color==='orange' ? '#ffe082' : '#bbf7d0'}`,
-          borderRadius:12, padding:16, marginBottom:16
+          maxWidth: 1200,
+          margin: '0 auto',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}>
-          <p style={{ fontWeight:500, fontSize:16, margin:'0 0 6px' }}>{risk.emoji} Risk Level: {risk.risk_level}</p>
-          <p style={{ color:'#555', margin:'0 0 4px', fontSize:14 }}>{risk.advice}</p>
-          <p style={{ fontSize:12, color:'#888', margin:0 }}>
-            ML Confidence: {risk.confidence}% — Haemoglobin: {risk.extracted?.haemoglobin}, Blood Sugar: {risk.extracted?.blood_sugar}, BP: {risk.extracted?.systolic_bp}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ color: theme.primary }}>
+              <HeartPulseIcon />
+            </div>
+            <div>
+              <h1 style={{ 
+                fontSize: 24, 
+                fontWeight: 700, 
+                margin: 0,
+                background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>
+                MedSaathi
+              </h1>
+              <p style={{ fontSize: 12, color: theme.textSecondary, margin: 0 }}>
+                AI-Powered Medical Report Analysis
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            {/* Language Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <GlobeIcon />
+              <select 
+                value={language} 
+                onChange={e => setLanguage(e.target.value)}
+                style={{
+                  padding: '10px 16px',
+                  borderRadius: 10,
+                  border: `1px solid ${theme.inputBorder}`,
+                  background: theme.inputBg,
+                  color: theme.text,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  outline: 'none'
+                }}
+              >
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Kannada">Kannada</option>
+                <option value="Bengali">Bengali</option>
+              </select>
+            </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              style={{
+                padding: 10,
+                borderRadius: 10,
+                border: `1px solid ${theme.inputBorder}`,
+                background: theme.inputBg,
+                color: theme.text,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s'
+              }}
+              aria-label="Toggle theme"
+            >
+              {darkMode ? <SunIcon /> : <MoonIcon />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px' }}>
+        {/* Hero Section */}
+        <div style={{
+          textAlign: 'center',
+          marginBottom: 40,
+          padding: '40px 20px'
+        }}>
+          <h2 style={{
+            fontSize: 36,
+            fontWeight: 700,
+            marginBottom: 16,
+            lineHeight: 1.3
+          }}>
+            Understand Your Lab Reports{' '}
+            <span style={{ color: theme.primary }}>Instantly</span>
+          </h2>
+          <p style={{
+            fontSize: 18,
+            color: theme.textSecondary,
+            maxWidth: 600,
+            margin: '0 auto',
+            lineHeight: 1.6
+          }}>
+            Upload your medical report and get AI-powered analysis in simple language. 
+            Available in multiple Indian languages.
           </p>
         </div>
-      )}
 
-       {/* Entities
-      {entities && entities.tests && entities.tests.length > 0 && (
-        <div style={{ background:'#f8f9fa', borderRadius:12, padding:14, marginBottom:16, border:'1px solid #e9ecef' }}>
-          <p style={{ fontWeight:500, marginBottom:6, fontSize:14 }}>Tests Detected: {entities.tests.join(', ')}</p>
-          {entities.diseases && entities.diseases.length > 0 &&
-            <p style={{ color:'#dc2626', fontSize:13, margin:0 }}>Conditions: {entities.diseases.join(', ')}</p>}
-        </div>
-      )}  */}
-
-       {/* WhatsApp Share */}
-      {familySummary && (
-        <div style={{ background:'#f8f9fa', padding:16, borderRadius:12, border:'1px solid #e9ecef', marginBottom:16 }}>
-          <p style={{ fontWeight:500, textAlign:'center', marginBottom:12, fontSize:14 }}>{currentLang.whatsappTitle}</p>
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
-            <button onClick={shareFamilyOnWhatsApp}
-              style={{ background:'#25D366', color:'white', padding:14, borderRadius:10, border:'none', cursor:'pointer', fontSize:13 }}>
-              {currentLang.shareFamily}
-            </button>
-            <button onClick={shareDoctorOnWhatsApp}
-              style={{ background:'#185FA5', color:'white', padding:14, borderRadius:10, border:'none', cursor:'pointer', fontSize:13 }}>
-              {currentLang.shareDoctor}
-            </button>
+        {/* Upload Section */}
+        <div style={{
+          background: theme.cardBg,
+          borderRadius: 20,
+          border: `1px solid ${theme.cardBorder}`,
+          padding: 32,
+          marginBottom: 32,
+          boxShadow: darkMode ? 'none' : '0 4px 20px rgba(0,0,0,0.05)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
+            <div style={{
+              padding: 10,
+              borderRadius: 10,
+              background: theme.primaryLight,
+              color: theme.primary
+            }}>
+              <FileTextIcon />
+            </div>
+            <div>
+              <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>{currentLang.upload}</h3>
+              <p style={{ fontSize: 13, color: theme.textSecondary, margin: 0 }}>PDF, JPG, or PNG format</p>
+            </div>
           </div>
-        </div>
-      )} 
 
-    {/* Chatbot */}
-      {summary && (
-        <div style={{ background:'#f8f9fa', borderRadius:12, padding:16, border:'1px solid #e9ecef', marginBottom:16 }}>
-          <p style={{ fontWeight:500, marginBottom:10, fontSize:14 }}>Ask MedSaathi about your report</p>
-          <div style={{ maxHeight:280, overflowY:'auto', marginBottom:10 }}>
-            {chatHistory.length === 0 && (
-              <p style={{ color:'#999', textAlign:'center', padding:20, fontSize:13 }}>
-                {`${currentLang.askPlaceholder} ${language}...`}
-              </p>
-            )}
-            {chatHistory.map((msg, i) => (
-              <div key={i} style={{ display:'flex', justifyContent: msg.type==='user' ? 'flex-end' : 'flex-start', marginBottom:8 }}>
+          {/* Drag & Drop Zone */}
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              border: `2px dashed ${isDragging ? theme.primary : theme.inputBorder}`,
+              borderRadius: 16,
+              padding: '48px 24px',
+              textAlign: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.3s',
+              background: isDragging ? theme.primaryLight : 'transparent'
+            }}
+          >
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
+            <div style={{ color: isDragging ? theme.primary : theme.textSecondary, marginBottom: 16 }}>
+              <UploadIcon />
+            </div>
+            <p style={{ fontSize: 16, fontWeight: 500, marginBottom: 8 }}>
+              {uploading ? 'Processing your report...' : 'Drag and drop your report here'}
+            </p>
+            <p style={{ fontSize: 14, color: theme.textSecondary }}>
+              or click to browse files
+            </p>
+          </div>
+
+          {/* OR Divider */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16,
+            margin: '24px 0'
+          }}>
+            <div style={{ flex: 1, height: 1, background: theme.cardBorder }}></div>
+            <span style={{ color: theme.textSecondary, fontSize: 14 }}>OR</span>
+            <div style={{ flex: 1, height: 1, background: theme.cardBorder }}></div>
+          </div>
+
+          {/* Text Input */}
+          <div>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: 12
+            }}>
+              <label style={{ fontSize: 14, fontWeight: 500 }}>{currentLang.paste}</label>
+              <button
+                onClick={() => { setReportText(SAMPLE_REPORT); setErrorMsg(''); }}
+                style={{
+                  background: theme.primaryLight,
+                  color: theme.primary,
+                  padding: '8px 16px',
+                  borderRadius: 8,
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  transition: 'all 0.2s'
+                }}
+              >
+                {currentLang.sampleBtn}
+              </button>
+            </div>
+            <textarea
+              rows={6}
+              value={reportText}
+              onChange={e => setReportText(e.target.value)}
+              placeholder="Paste your medical report text here..."
+              style={{
+                width: '100%',
+                padding: 16,
+                borderRadius: 12,
+                border: `1px solid ${theme.inputBorder}`,
+                background: theme.inputBg,
+                color: theme.text,
+                fontSize: 14,
+                resize: 'vertical',
+                boxSizing: 'border-box',
+                lineHeight: 1.6,
+                outline: 'none'
+              }}
+            />
+          </div>
+
+          {/* Analyze Button */}
+          <button
+            onClick={analyzeReport}
+            disabled={loading}
+            style={{
+              width: '100%',
+              marginTop: 20,
+              padding: '16px 32px',
+              borderRadius: 12,
+              border: 'none',
+              background: loading ? theme.textSecondary : `linear-gradient(135deg, ${theme.primary}, #0d9488)`,
+              color: 'white',
+              fontSize: 16,
+              fontWeight: 600,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              transition: 'all 0.3s',
+              boxShadow: loading ? 'none' : '0 4px 20px rgba(16, 185, 129, 0.3)'
+            }}
+          >
+            {loading ? 'Analyzing your report...' : currentLang.explainBtn}
+          </button>
+        </div>
+
+        {/* Results Section */}
+        {(familySummary || doctorSummary) && (
+          <div style={{
+            background: theme.cardBg,
+            borderRadius: 20,
+            border: `1px solid ${theme.cardBorder}`,
+            marginBottom: 32,
+            overflow: 'hidden',
+            boxShadow: darkMode ? 'none' : '0 4px 20px rgba(0,0,0,0.05)'
+          }}>
+            {/* Action Bar */}
+            <div style={{
+              padding: '16px 24px',
+              borderBottom: `1px solid ${theme.cardBorder}`,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 12
+            }}>
+              <button
+                onClick={toggleVoice}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 20px',
+                  borderRadius: 10,
+                  border: 'none',
+                  background: speaking ? theme.danger : theme.secondary,
+                  color: 'white',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <MicIcon />
+                {speaking ? currentLang.stopBtn : `${currentLang.listenBtn} ${language}`}
+              </button>
+
+              <button
+                onClick={downloadReport}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '10px 20px',
+                  borderRadius: 10,
+                  border: `1px solid ${theme.inputBorder}`,
+                  background: 'transparent',
+                  color: theme.text,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <DownloadIcon />
+                {currentLang.downloadBtn}
+              </button>
+            </div>
+
+            {/* Tabs */}
+            <div style={{ display: 'flex', borderBottom: `1px solid ${theme.cardBorder}` }}>
+              <button
+                onClick={() => { setActiveTab('family'); setSummary(familySummary); }}
+                style={{
+                  flex: 1,
+                  padding: '16px 24px',
+                  border: 'none',
+                  background: activeTab === 'family' ? theme.primaryLight : 'transparent',
+                  color: activeTab === 'family' ? theme.primary : theme.textSecondary,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  borderBottom: activeTab === 'family' ? `2px solid ${theme.primary}` : '2px solid transparent',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <UsersIcon />
+                Family Mode
+              </button>
+              <button
+                onClick={() => { setActiveTab('doctor'); setSummary(doctorSummary); }}
+                style={{
+                  flex: 1,
+                  padding: '16px 24px',
+                  border: 'none',
+                  background: activeTab === 'doctor' ? theme.secondaryLight : 'transparent',
+                  color: activeTab === 'doctor' ? theme.secondary : theme.textSecondary,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  borderBottom: activeTab === 'doctor' ? `2px solid ${theme.secondary}` : '2px solid transparent',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <StethoscopeIcon />
+                Doctor Mode
+              </button>
+            </div>
+
+            {/* Summary Content */}
+            <div style={{ padding: 24 }}>
+              <h4 style={{
+                fontSize: 16,
+                fontWeight: 600,
+                marginBottom: 16,
+                color: activeTab === 'family' ? theme.primary : theme.secondary
+              }}>
+                {activeTab === 'family' ? currentLang.summaryTitle : 'Doctor Summary (English)'}
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {displaySummary.split('\n').filter(l => l.trim()).map((line, i) => {
+                  const isNormal = line.toLowerCase().includes('normal') || line.includes('Normal');
+                  const isHigh = line.includes('[High]') || line.toLowerCase().includes('high');
+                  const isLow = line.includes('[Low]') || line.toLowerCase().includes('low');
+                  
+                  let bgColor = 'transparent';
+                  let borderColor = 'transparent';
+                  if (isHigh) { bgColor = theme.warningLight; borderColor = theme.warning; }
+                  else if (isLow) { bgColor = theme.dangerLight; borderColor = theme.danger; }
+                  else if (isNormal) { bgColor = theme.primaryLight; borderColor = theme.primary; }
+
+                  return (
+                    <div key={i} style={{
+                      padding: '12px 16px',
+                      borderRadius: 10,
+                      fontSize: 14,
+                      lineHeight: 1.7,
+                      background: bgColor,
+                      borderLeft: (isHigh || isLow || isNormal) ? `3px solid ${borderColor}` : 'none'
+                    }}>
+                      {line}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Risk Assessment */}
+        {risk && (
+          <div style={{
+            background: risk.color === 'red' ? theme.dangerLight : 
+                       risk.color === 'orange' ? theme.warningLight : theme.primaryLight,
+            borderRadius: 20,
+            padding: 24,
+            marginBottom: 32,
+            border: `1px solid ${risk.color === 'red' ? theme.danger : 
+                                 risk.color === 'orange' ? theme.warning : theme.primary}`
+          }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+              <div style={{
+                padding: 12,
+                borderRadius: 12,
+                background: risk.color === 'red' ? theme.danger : 
+                           risk.color === 'orange' ? theme.warning : theme.primary,
+                color: 'white'
+              }}>
+                <AlertIcon />
+              </div>
+              <div style={{ flex: 1 }}>
+                <h4 style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>
+                  {risk.emoji} Risk Level: {risk.risk_level}
+                </h4>
+                <p style={{ fontSize: 14, marginBottom: 12, color: theme.textSecondary }}>
+                  {risk.advice}
+                </p>
                 <div style={{
-                  background: msg.type==='user' ? '#1D9E75' : '#fff',
-                  color: msg.type==='user' ? '#fff' : '#333',
-                  padding:'10px 14px', fontSize:13, lineHeight:1.6,
-                  borderRadius: msg.type==='user' ? '12px 12px 0 12px' : '12px 12px 12px 0',
-                  maxWidth:'80%', border: msg.type==='bot' ? '1px solid #e9ecef' : 'none'
+                  fontSize: 12,
+                  color: theme.textSecondary,
+                  padding: '8px 12px',
+                  background: darkMode ? 'rgba(0,0,0,0.2)' : 'rgba(255,255,255,0.5)',
+                  borderRadius: 8,
+                  display: 'inline-block'
                 }}>
-                  {msg.text}
+                  ML Confidence: {risk.confidence}% | Haemoglobin: {risk.extracted?.haemoglobin} | 
+                  Blood Sugar: {risk.extracted?.blood_sugar} | BP: {risk.extracted?.systolic_bp}
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-          <div style={{ display:'flex', gap:8 }}>
-            <input value={question} onChange={e => setQuestion(e.target.value)}
-              onKeyPress={e => e.key==='Enter' && askQuestion()}
-              placeholder={`${currentLang.askPlaceholder} ${language}...`}
-              style={{ flex:1, padding:10, borderRadius:8, border:'1px solid #ccc', fontSize:13 }} />
-            <button onClick={askQuestion}
-              style={{ background:'#185FA5', color:'#fff', padding:'10px 18px', borderRadius:8, border:'none', cursor:'pointer', fontSize:13 }}>
-              Send
-            </button>
+        )}
+
+        {/* WhatsApp Share */}
+        {familySummary && (
+          <div style={{
+            background: theme.cardBg,
+            borderRadius: 20,
+            border: `1px solid ${theme.cardBorder}`,
+            padding: 24,
+            marginBottom: 32,
+            boxShadow: darkMode ? 'none' : '0 4px 20px rgba(0,0,0,0.05)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+              <div style={{
+                padding: 10,
+                borderRadius: 10,
+                background: '#dcfce7',
+                color: '#16a34a'
+              }}>
+                <ShareIcon />
+              </div>
+              <div>
+                <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>{currentLang.whatsappTitle}</h3>
+                <p style={{ fontSize: 13, color: theme.textSecondary, margin: 0 }}>
+                  Share your analysis with family or doctors
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+              <button
+                onClick={shareFamilyOnWhatsApp}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  padding: '14px 24px',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: '#25D366',
+                  color: 'white',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <UsersIcon />
+                {currentLang.shareFamily}
+              </button>
+              <button
+                onClick={shareDoctorOnWhatsApp}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 10,
+                  padding: '14px 24px',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: theme.secondary,
+                  color: 'white',
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <StethoscopeIcon />
+                {currentLang.shareDoctor}
+              </button>
+            </div>
           </div>
+        )}
+
+        {/* Chat Section */}
+        {summary && (
+          <div style={{
+            background: theme.cardBg,
+            borderRadius: 20,
+            border: `1px solid ${theme.cardBorder}`,
+            marginBottom: 32,
+            overflow: 'hidden',
+            boxShadow: darkMode ? 'none' : '0 4px 20px rgba(0,0,0,0.05)'
+          }}>
+            <div style={{
+              padding: '20px 24px',
+              borderBottom: `1px solid ${theme.cardBorder}`,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12
+            }}>
+              <div style={{
+                padding: 10,
+                borderRadius: 10,
+                background: theme.secondaryLight,
+                color: theme.secondary
+              }}>
+                <MessageCircleIcon />
+              </div>
+              <div>
+                <h3 style={{ fontSize: 18, fontWeight: 600, margin: 0 }}>Ask MedSaathi</h3>
+                <p style={{ fontSize: 13, color: theme.textSecondary, margin: 0 }}>
+                  Ask questions about your report in {language}
+                </p>
+              </div>
+            </div>
+
+            <div style={{
+              height: 320,
+              overflowY: 'auto',
+              padding: 20,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12
+            }}>
+              {chatHistory.length === 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: 40,
+                  color: theme.textSecondary
+                }}>
+                  <MessageCircleIcon />
+                  <p style={{ marginTop: 12 }}>{`${currentLang.askPlaceholder} ${language}...`}</p>
+                </div>
+              )}
+              {chatHistory.map((msg, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex',
+                    justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start'
+                  }}
+                >
+                  <div style={{
+                    maxWidth: '75%',
+                    padding: '12px 16px',
+                    borderRadius: msg.type === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                    background: msg.type === 'user' ? theme.primary : (darkMode ? '#334155' : '#f1f5f9'),
+                    color: msg.type === 'user' ? 'white' : theme.text,
+                    fontSize: 14,
+                    lineHeight: 1.6
+                  }}>
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              <div ref={chatEndRef} />
+            </div>
+
+            <div style={{
+              padding: 16,
+              borderTop: `1px solid ${theme.cardBorder}`,
+              display: 'flex',
+              gap: 12
+            }}>
+              <input
+                value={question}
+                onChange={e => setQuestion(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && askQuestion()}
+                placeholder={`${currentLang.askPlaceholder} ${language}...`}
+                style={{
+                  flex: 1,
+                  padding: '14px 18px',
+                  borderRadius: 12,
+                  border: `1px solid ${theme.inputBorder}`,
+                  background: theme.inputBg,
+                  color: theme.text,
+                  fontSize: 14,
+                  outline: 'none'
+                }}
+              />
+              <button
+                onClick={askQuestion}
+                style={{
+                  padding: '14px 24px',
+                  borderRadius: 12,
+                  border: 'none',
+                  background: theme.secondary,
+                  color: 'white',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  transition: 'all 0.2s'
+                }}
+              >
+                <SendIcon />
+                Send
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Disclaimer */}
+        <div style={{
+          padding: 20,
+          borderRadius: 16,
+          background: theme.warningLight,
+          border: `1px solid ${theme.warning}`,
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 12
+        }}>
+          <AlertIcon style={{ color: theme.warning, flexShrink: 0 }} />
+          <p style={{ fontSize: 13, lineHeight: 1.6, margin: 0, color: darkMode ? theme.text : '#92400e' }}>
+            {currentLang.disclaimer}
+          </p>
         </div>
-      )} 
 
-      {/* Disclaimer */}
-      <div style={{ marginTop:24, padding:14, background:'#fff3cd', borderRadius:8, fontSize:12, textAlign:'center', color:'#856404' }}>
-        {currentLang.disclaimer}
-      </div>
-
+        {/* Footer */}
+        <footer style={{
+          textAlign: 'center',
+          padding: '32px 0 16px',
+          color: theme.textSecondary,
+          fontSize: 13
+        }}>
+          <p style={{ margin: 0 }}>
+            Made with care by MedSaathi Team
+          </p>
+        </footer>
+      </main>
     </div>
   );
 }
