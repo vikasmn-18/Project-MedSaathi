@@ -13,12 +13,12 @@ HBsAg: NON REACTIVE
 Micro Filaria: NOT SEEN`;
 
 const t = {
-  English: { selectLang:"Select Language", upload:"Upload Report (PDF or Image)", paste:"Or Paste Report Text", explainBtn:"Explain My Report", listenBtn:"Listen in", stopBtn:"Stop Speaking", downloadBtn:"Download PDF Report", shareFamily:"Share Family Mode", shareDoctor:"Share Doctor Mode", whatsappTitle:"Share Report on WhatsApp", summaryTitle:"Your Report Explained", askPlaceholder:"Ask in", disclaimer:"Disclaimer: MedSaathi provides AI-generated summaries for informational purposes only. It does not replace professional medical advice. Please consult a qualified doctor for diagnosis or treatment.", uploadSuccess:"File read successfully!", downloadSuccess:"Downloaded successfully!", sampleBtn:"Try Sample Report" },
-  Hindi: { selectLang:"भाषा चुनें", upload:"रिपोर्ट अपलोड करें", paste:"या रिपोर्ट टेक्स्ट पेस्ट करें", explainBtn:"मेरी रिपोर्ट समझाएं", listenBtn:"सुनें", stopBtn:"बोलना बंद करें", downloadBtn:"PDF रिपोर्ट डाउनलोड करें", shareFamily:"फैमिली मोड शेयर", shareDoctor:"डॉक्टर मोड शेयर", whatsappTitle:"WhatsApp पर शेयर करें", summaryTitle:"आपकी रिपोर्ट", askPlaceholder:"पूछें", disclaimer:"डिस्क्लेमर: MedSaathi केवल सूचनात्मक उद्देश्य के लिए है। कृपया डॉक्टर से परामर्श करें।", uploadSuccess:"फाइल पढ़ी गई!", downloadSuccess:"डाउनलोड सफल!", sampleBtn:"सैंपल रिपोर्ट आज़माएं" },
-  Tamil: { selectLang:"மொழி தேர்வு", upload:"அறிக்கை பதிவேற்றவும்", paste:"அல்லது உரை ஒட்டவும்", explainBtn:"என் அறிக்கை விளக்கு", listenBtn:"கேளுங்கள்", stopBtn:"நிறுத்து", downloadBtn:"PDF பதிவிறக்கு", shareFamily:"குடும்ப பகிர்வு", shareDoctor:"டாக்டர் பகிர்வு", whatsappTitle:"WhatsApp பகிர்வு", summaryTitle:"உங்கள் அறிக்கை", askPlaceholder:"கேளுங்கள்", disclaimer:"MedSaathi தகவல் நோக்கத்திற்காக மட்டுமே. மருத்துவரை அணுகவும்.", uploadSuccess:"கோப்பு படிக்கப்பட்டது!", downloadSuccess:"பதிவிறக்கம் வெற்றி!", sampleBtn:"மாதிரி அறிக்கை" },
-  Kannada: { selectLang:"ಭಾಷೆ ಆಯ್ಕೆ", upload:"ರಿಪೋರ್ಟ್ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ", paste:"ಅಥವಾ ಟೆಕ್ಸ್ಟ್ ಪೇಸ್ಟ್ ಮಾಡಿ", explainBtn:"ನನ್ನ ರಿಪೋರ್ಟ್ ವಿವರಿಸಿ", listenBtn:"ಕೇಳಿ", stopBtn:"ನಿಲ್ಲಿಸಿ", downloadBtn:"PDF ಡೌನ್‌ಲೋಡ್", shareFamily:"ಫ್ಯಾಮಿಲಿ ಶೇರ್", shareDoctor:"ಡಾಕ್ಟರ್ ಶೇರ್", whatsappTitle:"WhatsApp ಶೇರ್", summaryTitle:"ನಿಮ್ಮ ರಿಪೋರ್ಟ್", askPlaceholder:"ಕೇಳಿ", disclaimer:"MedSaathi ಮಾಹಿತಿ ಉದ್ದೇಶಕ್ಕಾಗಿ ಮಾತ್ರ. ದಯವಿಟ್ಟು ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಿ.", uploadSuccess:"ಫೈಲ್ ಓದಲಾಗಿದೆ!", downloadSuccess:"ಡೌನ್‌ಲೋಡ್ ಯಶಸ್ವಿ!", sampleBtn:"ಮಾದರಿ ರಿಪೋರ್ಟ್" },
-  Telugu: { selectLang:"భాష ఎంచుకోండి", upload:"రిపోర్ట్ అప్‌లోడ్ చేయండి", paste:"లేదా టెక్స్ట్ పేస్ట్ చేయండి", explainBtn:"నా రిపోర్ట్ వివరించండి", listenBtn:"వినండి", stopBtn:"ఆపండి", downloadBtn:"PDF డౌన్‌లోడ్", shareFamily:"ఫ్యామిలీ షేర్", shareDoctor:"డాక్టర్ షేర్", whatsappTitle:"WhatsApp షేర్", summaryTitle:"మీ రిపోర్ట్", askPlaceholder:"అడగండి", disclaimer:"MedSaathi సమాచారం కోసం మాత్రమే. దయచేసి డాక్టర్‌ని సంప్రదించండి.", uploadSuccess:"ఫైల్ చదవబడింది!", downloadSuccess:"డౌన్‌లోడ్ విజయవంతం!", sampleBtn:"నమూనా రిపోర్ట్" },
-  Bengali: { selectLang:"ভাষা নির্বাচন", upload:"রিপোর্ট আপলোড করুন", paste:"অথবা টেক্সট পেস্ট করুন", explainBtn:"আমার রিপোর্ট ব্যাখ্যা করুন", listenBtn:"শুনুন", stopBtn:"থামুন", downloadBtn:"PDF ডাউনলোড", shareFamily:"ফ্যামিলি শেয়ার", shareDoctor:"ডাক্তার শেয়ার", whatsappTitle:"WhatsApp শেয়ার", summaryTitle:"আপনার রিপোর্ট", askPlaceholder:"জিজ্ঞাসা করুন", disclaimer:"MedSaathi শুধুমাত্র তথ্যের জন্য। দয়া করে ডাক্তারের সাথে পরামর্শ করুন।", uploadSuccess:"ফাইল পড়া হয়েছে!", downloadSuccess:"ডাউনলোড সফল!", sampleBtn:"নমুনা রিপোর্ট" }
+  English: { selectLang:"Select Language", upload:"Upload Report (PDF or Image)", paste:"Or Paste Report Text", explainBtn:"Explain My Report", listenBtn:"Listen in", stopBtn:"Stop Speaking", downloadBtn:"Download Report", shareFamily:"Share Family Mode", shareDoctor:"Share Doctor Mode", whatsappTitle:"Share Report on WhatsApp", summaryTitle:"Your Report Explained", askPlaceholder:"Ask in", disclaimer:"Disclaimer: MedSaathi provides AI-generated summaries for informational purposes only. It does not replace professional medical advice. Please consult a qualified doctor for diagnosis or treatment.", uploadSuccess:"File read successfully!", downloadSuccess:"Downloaded successfully!", sampleBtn:"Try Sample Report" },
+  Hindi: { selectLang:"भाषा चुनें", upload:"रिपोर्ट अपलोड करें", paste:"या रिपोर्ट टेक्स्ट पेस्ट करें", explainBtn:"मेरी रिपोर्ट समझाएं", listenBtn:"सुनें", stopBtn:"बोलना बंद करें", downloadBtn:" रिपोर्ट डाउनलोड करें", shareFamily:"फैमिली मोड शेयर", shareDoctor:"डॉक्टर मोड शेयर", whatsappTitle:"WhatsApp पर शेयर करें", summaryTitle:"आपकी रिपोर्ट", askPlaceholder:"पूछें", disclaimer:"डिस्क्लेमर: MedSaathi केवल सूचनात्मक उद्देश्य के लिए है। कृपया डॉक्टर से परामर्श करें।", uploadSuccess:"फाइल पढ़ी गई!", downloadSuccess:"डाउनलोड सफल!", sampleBtn:"सैंपल रिपोर्ट आज़माएं" },
+  Tamil: { selectLang:"மொழி தேர்வு", upload:"அறிக்கை பதிவேற்றவும்", paste:"அல்லது உரை ஒட்டவும்", explainBtn:"என் அறிக்கை விளக்கு", listenBtn:"கேளுங்கள்", stopBtn:"நிறுத்து", downloadBtn:" பதிவிறக்கு", shareFamily:"குடும்ப பகிர்வு", shareDoctor:"டாக்டர் பகிர்வு", whatsappTitle:"WhatsApp பகிர்வு", summaryTitle:"உங்கள் அறிக்கை", askPlaceholder:"கேளுங்கள்", disclaimer:"MedSaathi தகவல் நோக்கத்திற்காக மட்டுமே. மருத்துவரை அணுகவும்.", uploadSuccess:"கோப்பு படிக்கப்பட்டது!", downloadSuccess:"பதிவிறக்கம் வெற்றி!", sampleBtn:"மாதிரி அறிக்கை" },
+  Kannada: { selectLang:"ಭಾಷೆ ಆಯ್ಕೆ", upload:"ರಿಪೋರ್ಟ್ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ", paste:"ಅಥವಾ ಟೆಕ್ಸ್ಟ್ ಪೇಸ್ಟ್ ಮಾಡಿ", explainBtn:"ನನ್ನ ರಿಪೋರ್ಟ್ ವಿವರಿಸಿ", listenBtn:"ಕೇಳಿ", stopBtn:"ನಿಲ್ಲಿಸಿ", downloadBtn:" ಡೌನ್‌ಲೋಡ್", shareFamily:"ಫ್ಯಾಮಿಲಿ ಶೇರ್", shareDoctor:"ಡಾಕ್ಟರ್ ಶೇರ್", whatsappTitle:"WhatsApp ಶೇರ್", summaryTitle:"ನಿಮ್ಮ ರಿಪೋರ್ಟ್", askPlaceholder:"ಕೇಳಿ", disclaimer:"MedSaathi ಮಾಹಿತಿ ಉದ್ದೇಶಕ್ಕಾಗಿ ಮಾತ್ರ. ದಯವಿಟ್ಟು ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಿ.", uploadSuccess:"ಫೈಲ್ ಓದಲಾಗಿದೆ!", downloadSuccess:"ಡೌನ್‌ಲೋಡ್ ಯಶಸ್ವಿ!", sampleBtn:"ಮಾದರಿ ರಿಪೋರ್ಟ್" },
+  Telugu: { selectLang:"భాష ఎంచుకోండి", upload:"రిపోర్ట్ అప్‌లోడ్ చేయండి", paste:"లేదా టెక్స్ట్ పేస్ట్ చేయండి", explainBtn:"నా రిపోర్ట్ వివరించండి", listenBtn:"వినండి", stopBtn:"ఆపండి", downloadBtn:" డౌన్‌లోడ్", shareFamily:"ఫ్యామిలీ షేర్", shareDoctor:"డాక్టర్ షేర్", whatsappTitle:"WhatsApp షేర్", summaryTitle:"మీ రిపోర్ట్", askPlaceholder:"అడగండి", disclaimer:"MedSaathi సమాచారం కోసం మాత్రమే. దయచేసి డాక్టర్‌ని సంప్రదించండి.", uploadSuccess:"ఫైల్ చదవబడింది!", downloadSuccess:"డౌన్‌లోడ్ విజయవంతం!", sampleBtn:"నమూనా రిపోర్ట్" },
+  Bengali: { selectLang:"ভাষা নির্বাচন", upload:"রিপোর্ট আপলোড করুন", paste:"অথবা টেক্সট পেস্ট করুন", explainBtn:"আমার রিপোর্ট ব্যাখ্যা করুন", listenBtn:"শুনুন", stopBtn:"থামুন", downloadBtn:" ডাউনলোড", shareFamily:"ফ্যামিলি শেয়ার", shareDoctor:"ডাক্তার শেয়ার", whatsappTitle:"WhatsApp শেয়ার", summaryTitle:"আপনার রিপোর্ট", askPlaceholder:"জিজ্ঞাসা করুন", disclaimer:"MedSaathi শুধুমাত্র তথ্যের জন্য। দয়া করে ডাক্তারের সাথে পরামর্শ করুন।", uploadSuccess:"ফাইল পড়া হয়েছে!", downloadSuccess:"ডাউনলোড সফল!", sampleBtn:"নমুনা রিপোর্ট" }
 };
 
 export default function App() {
@@ -107,27 +107,39 @@ export default function App() {
     }
   };
 
-  const downloadPDF = async () => {
-    if (!summary) return showToast('Analyze report first', true);
+  // Download as Text
+  const downloadReport = async () => {
+    if (!summary) return alert('Analyze report first');
+
     try {
       const res = await axios.post(
         `${API}/download-pdf`,
-        { summary, language, english_summary: englishSummary },
-        { responseType: 'blob', timeout: 20000 }
+        { summary, language },
+        {
+          responseType: 'blob',
+          timeout: 10000
+        }
       );
-      const blob = new Blob([res.data], { type: 'application/pdf' });
+
+      const blob = new Blob([res.data], { type: 'text/plain;charset=utf-8' });
       const url = window.URL.createObjectURL(blob);
+
       const link = document.createElement('a');
       link.href = url;
-      link.download = `MedSaathi_Report_${language}.pdf`;
+      link.download = `MedSaathi_Report_${language}.txt`;
+
+      document.body.appendChild(link);
       link.click();
+      link.remove();
+
       window.URL.revokeObjectURL(url);
-      showToast(currentLang.downloadSuccess);
+
+      alert(`✅ Downloaded successfully as ${language} text file!`);
     } catch (e) {
-      showToast('Download failed: ' + (e.response?.data?.error || e.message), true);
+      console.error(e);
+      alert('Download failed. Please check if backend is running.');
     }
   };
-
   const shareFamilyOnWhatsApp = () => {
     if (!familySummary) return showToast('Please analyze the report first', true);
     const message = `🏥 MedSaathi - Family Mode\n\nLanguage: ${language}\n\n${familySummary.substring(0, 700)}...\n\nGenerated by MedSaathi`;
@@ -237,7 +249,7 @@ export default function App() {
               padding:'12px', borderRadius:10, border:'none', cursor:'pointer', fontSize:14 }}>
             {speaking ? currentLang.stopBtn : `${currentLang.listenBtn} ${language}`}
           </button>
-          <button onClick={downloadPDF}
+          <button onClick={downloadReport}
             style={{ background:'#185FA5', color:'#fff', padding:'12px',
               borderRadius:10, border:'none', cursor:'pointer', fontSize:14 }}>
             {currentLang.downloadBtn}
@@ -302,14 +314,14 @@ export default function App() {
         </div>
       )}
 
-       {/* Entities */}
+       {/* Entities
       {entities && entities.tests && entities.tests.length > 0 && (
         <div style={{ background:'#f8f9fa', borderRadius:12, padding:14, marginBottom:16, border:'1px solid #e9ecef' }}>
           <p style={{ fontWeight:500, marginBottom:6, fontSize:14 }}>Tests Detected: {entities.tests.join(', ')}</p>
           {entities.diseases && entities.diseases.length > 0 &&
             <p style={{ color:'#dc2626', fontSize:13, margin:0 }}>Conditions: {entities.diseases.join(', ')}</p>}
         </div>
-      )} 
+      )}  */}
 
        {/* WhatsApp Share */}
       {familySummary && (
