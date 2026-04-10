@@ -1,4 +1,4 @@
-from fpdf import FPDF
+from fpdf import FPDF  # type: ignore[import]
 import os
 
 BASE_DIR = os.path.dirname(__file__)
