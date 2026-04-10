@@ -643,7 +643,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('family');
   const [dragOver, setDragOver] = useState(false);
   const appRef = useRef(null);
-
+  const [isListening, setIsListening] = useState(false);
   const L = LANGS[language] || LANGS.English;
 
   const C = {
@@ -748,7 +748,44 @@ export default function App() {
     utt.onerror = () => { setSpeaking(false); showToast(L.voiceError, 'error'); };
     window.speechSynthesis.speak(utt);
   };
-
+const startVoiceInput = () => {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast(L.chromeTip, 'error');
+    return;
+  }
+  if (isListening) {
+    setIsListening(false);
+    return;
+  }
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  const langMap = {
+    Hindi: 'hi-IN', Tamil: 'ta-IN', Telugu: 'te-IN',
+    Kannada: 'kn-IN', Bengali: 'bn-IN', English: 'en-IN'
+  };
+  recognition.lang = langMap[language] || 'en-IN';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.onstart = () => setIsListening(true);
+  recognition.onend = () => setIsListening(false);
+  recognition.onerror = () => { setIsListening(false); showToast(L.voiceError, 'error'); };
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    setQuestion(transcript);
+    // Auto-send after short delay so user can see what was captured
+    setTimeout(() => {
+      if (transcript.trim()) {
+        const userQ = transcript.trim();
+        setQuestion('');
+        setChatHistory(prev => [...prev, { type: 'user', text: `🎤 ${userQ}` }]);
+        axios.post(`${API}/ask`, { question: userQ, report_context: reportText, language })
+          .then(res => setChatHistory(prev => [...prev, { type: 'bot', text: res.data.answer || "Sorry, I couldn't answer that." }]))
+          .catch(() => setChatHistory(prev => [...prev, { type: 'bot', text: 'Sorry, something went wrong.' }]));
+      }
+    }, 600);
+  };
+  recognition.start();
+};
   const displaySummary = activeTab === 'family' ? familySummary : doctorSummary;
   const hasResult = familySummary || doctorSummary;
   const riskColors = {
@@ -1018,9 +1055,45 @@ export default function App() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <input value={question} onChange={e => setQuestion(e.target.value)} onKeyPress={e => e.key === 'Enter' && askQuestion()} placeholder={`${L.askPlaceholder} ${language}...`} style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: `1px solid ${C.borderAccent}`, background: C.surface, color: C.text, fontSize: 13, outline: 'none', fontFamily: 'inherit' }} />
-                <button onClick={askQuestion} style={{ background: C.blue, color: '#fff', padding: '10px 18px', borderRadius: 10, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>{L.sendBtn}</button>
-              </div>
+  <button
+    onClick={startVoiceInput}
+    title={isListening ? 'Listening...' : 'Speak your question'}
+    style={{
+      background: isListening ? '#ef4444' : C.greenLight,
+      border: `1px solid ${isListening ? '#ef4444' : C.greenBorder}`,
+      color: isListening ? '#fff' : C.green,
+      borderRadius: 10,
+      padding: '10px 14px',
+      cursor: 'pointer',
+      fontSize: 16,
+      flexShrink: 0,
+      transition: 'all 0.2s',
+    }}
+  >
+    {isListening ? '⏹' : '🎤'}
+  </button>
+  <input
+    value={question}
+    onChange={e => setQuestion(e.target.value)}
+    onKeyPress={e => e.key === 'Enter' && askQuestion()}
+    placeholder={`${L.askPlaceholder} ${language}...`}
+    style={{
+      flex: 1, padding: '10px 14px', borderRadius: 10,
+      border: `1px solid ${C.borderAccent}`, background: C.surface,
+      color: C.text, fontSize: 13, outline: 'none', fontFamily: 'inherit'
+    }}
+  />
+  <button
+    onClick={askQuestion}
+    style={{
+      background: C.blue, color: '#fff', padding: '10px 18px',
+      borderRadius: 10, border: 'none', cursor: 'pointer',
+      fontSize: 13, fontWeight: 600
+    }}
+  >
+    {L.sendBtn}
+  </button>
+</div>
             </div>
           </Reveal>
         )}

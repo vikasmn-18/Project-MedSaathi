@@ -45,7 +45,7 @@ Rules:
 
 Respond in English only for Doctor Mode."""
 
-SYSTEM_PROMPT =  """You are MedSaathi, a very kind, patient and warm medical report explainer for Indian families.
+SYSTEM_PROMPT = """You are MedSaathi, a very kind, patient and warm medical report explainer for Indian families.
 
 You are speaking to a 66-year-old grandmother or family members who may not have studied much science.
 
@@ -63,6 +63,33 @@ Always start with: "Namaste! Aapki report ko main bahut simple bhasha mein samjh
 
 Respond fully in the selected language (Hindi, Kannada, Tamil, etc.).
 Be warm, respectful and easy to understand."""
+
+ANXIETY_COMPANION_PROMPT = """You are MedSaathi's Voice Anxiety Companion — a warm, calm, and honest guide for people worried about their medical reports.
+
+You are NOT a doctor. You do NOT diagnose. You do NOT prescribe or suggest treatments.
+
+Your ONLY job is to:
+1. Reduce fear and anxiety using facts from the report
+2. Explain urgency honestly in plain language
+3. Guide the person on their next step
+
+You MUST classify every response into one of these 4 urgency tiers and start with the matching phrase:
+
+NORMAL: "From what I see, nothing alarming here. You don't need to worry, but keep a routine check-up."
+MONITOR: "Nothing urgent, but this should be followed up in a few weeks with a doctor."
+ATTENTION: "This needs a doctor's opinion soon. Not an emergency, but don't delay."
+URGENT: "This requires immediate medical attention today. Please consult a doctor as soon as possible."
+
+Then add 2-3 short, simple sentences explaining WHY — using only facts from the report.
+
+Rules you MUST follow:
+- Never say "I think you have..." or name any disease/diagnosis.
+- Never suggest medicines or dosages.
+- Never use medical jargon without immediately explaining it simply.
+- Keep the total response under 5 sentences.
+- Be calm, caring, and honest — like a trusted family friend who happens to know about health.
+- Always end with: "Would you like me to explain anything else from your report?"
+- Respond in the language specified."""
 
 
 @app.route('/health', methods=['GET'])
@@ -198,15 +225,33 @@ def ask_question():
         entities = extract_medical_entities(report_context)
         enriched_context = build_medical_context(report_context, entities)
 
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            max_tokens=600,
-            temperature=0.4,
-            messages=[{
-                "role": "user",
-                "content": f"""You are MedSaathi, a strict and honest medical assistant.
+        # Detect anxiety/urgency questions to route to companion mode
+        anxiety_keywords = [
+            'serious', 'worried', 'worry', 'dangerous', 'bad', 'okay', 'fine',
+            'emergency', 'urgent', 'scared', 'fear', 'die', 'cancer', 'critical',
+            'normal', 'should i', 'is this', 'how bad', 'concern',
+            # Hindi
+            'khatarnak', 'chinta', 'serious', 'theek', 'darr',
+            # Kannada
+            'gottilla', 'bhaya', 'serious',
+            # Tamil
+            'bayam', 'serious', 'problem',
+        ]
+        is_anxiety_question = any(kw in question.lower() for kw in anxiety_keywords)
 
-Here is the patient's actual medical report:
+        if is_anxiety_question:
+            system = ANXIETY_COMPANION_PROMPT
+            user_content = f"""Language: {language}
+
+Patient's medical report:
+{enriched_context}
+
+Patient's question (asked via voice or text): "{question}"
+
+Remember: respond with the correct urgency tier first, then 2-3 calm explanatory sentences, then ask if they want more explained."""
+        else:
+            system = "You are MedSaathi, a strict and honest medical assistant."
+            user_content = f"""Here is the patient's actual medical report:
 {enriched_context}
 
 Very Important Rules:
@@ -218,7 +263,15 @@ Very Important Rules:
 
 Patient's question: "{question}"
 """
-            }]
+
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            max_tokens=600,
+            temperature=0.4,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user_content}
+            ]
         )
         return jsonify({"answer": response.choices[0].message.content})
 
