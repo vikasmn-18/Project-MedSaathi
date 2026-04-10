@@ -302,16 +302,16 @@ export default function App() {
         </div>
       )}
 
-      {/* Entities */}
+       {/* Entities */}
       {entities && entities.tests && entities.tests.length > 0 && (
         <div style={{ background:'#f8f9fa', borderRadius:12, padding:14, marginBottom:16, border:'1px solid #e9ecef' }}>
           <p style={{ fontWeight:500, marginBottom:6, fontSize:14 }}>Tests Detected: {entities.tests.join(', ')}</p>
           {entities.diseases && entities.diseases.length > 0 &&
             <p style={{ color:'#dc2626', fontSize:13, margin:0 }}>Conditions: {entities.diseases.join(', ')}</p>}
         </div>
-      )}
+      )} 
 
-      {/* WhatsApp Share */}
+       {/* WhatsApp Share */}
       {familySummary && (
         <div style={{ background:'#f8f9fa', padding:16, borderRadius:12, border:'1px solid #e9ecef', marginBottom:16 }}>
           <p style={{ fontWeight:500, textAlign:'center', marginBottom:12, fontSize:14 }}>{currentLang.whatsappTitle}</p>
@@ -326,9 +326,9 @@ export default function App() {
             </button>
           </div>
         </div>
-      )}
+      )} 
 
-      {/* Chatbot */}
+    {/* Chatbot */}
       {summary && (
         <div style={{ background:'#f8f9fa', borderRadius:12, padding:16, border:'1px solid #e9ecef', marginBottom:16 }}>
           <p style={{ fontWeight:500, marginBottom:10, fontSize:14 }}>Ask MedSaathi about your report</p>
@@ -363,7 +363,7 @@ export default function App() {
             </button>
           </div>
         </div>
-      )}
+      )} 
 
       {/* Disclaimer */}
       <div style={{ marginTop:24, padding:14, background:'#fff3cd', borderRadius:8, fontSize:12, textAlign:'center', color:'#856404' }}>
