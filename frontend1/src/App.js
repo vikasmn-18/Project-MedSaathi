@@ -563,20 +563,29 @@ const LANG_OPTIONS = [
   { value: 'Kannada', label: 'ಕನ್ನಡ' },
   { value: 'Bengali', label: 'বাংলা' },
 ];
-
 function useReveal(threshold = 0.13) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.disconnect();
+        }
+      },
       { threshold }
     );
+
     obs.observe(el);
+
     return () => obs.disconnect();
-  }, []);
+  }, [threshold]);  // ✅ FIX HERE
+
   return [ref, visible];
 }
 
