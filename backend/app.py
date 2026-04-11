@@ -4,7 +4,7 @@ from pdf_generator import generate_pdf
 import uuid
 from ocr_engine import extract_text
 import tempfile
-from flask_cors import CORS
+from flask_cors import CORS  # type: ignore[import-untyped]
 from groq import Groq
 import os
 from dotenv import load_dotenv
@@ -280,5 +280,5 @@ Patient's question: "{question}"
 
 
 if __name__ == '__main__':
-    print("MedSaathi backend running at http://127.0.0.1:5000")
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port, debug=False)
